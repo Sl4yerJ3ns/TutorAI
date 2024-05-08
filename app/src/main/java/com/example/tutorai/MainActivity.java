@@ -2,6 +2,7 @@ package com.example.tutorai;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,8 +18,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import java.util.concurrent.Executor;
-
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
@@ -33,19 +32,23 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         textView = (TextView)findViewById(R.id.textView);
+
     }
 
+    //EditText Result = (EditText) findViewById(R.id.Result);
+
     public void buttonCallGeminiApi(View view){
+        EditText Result = (EditText) findViewById(R.id.Result);
+        String editTextValue = Result.getText().toString();
         // For text-only input, use the gemini-pro model
-        GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-pro",
+        GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-pro-vision",
         // Access your API key as a Build Configuration variable (see "Set up your API key" above)
                 /* apiKey */ "AIzaSyBx6F6-qxtaTgFJ5g_uE-UzocLo3KIgpjI");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
         Content content = new Content.Builder()
-                .addText("What is the Pythagorean Theorem?.")
+                .addText(editTextValue)
                 .build();
 
                 ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
@@ -64,3 +67,4 @@ public class MainActivity extends AppCompatActivity {
         }, this.getMainExecutor());
     }
 }
+
