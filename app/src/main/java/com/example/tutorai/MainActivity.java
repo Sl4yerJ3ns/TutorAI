@@ -1,5 +1,6 @@
 package com.example.tutorai;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         EditText Result = (EditText) findViewById(R.id.Result);
         String editTextValue = Result.getText().toString();
         // For text-only input, use the gemini-pro model
-        GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-pro-vision",
+        GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-pro",
         // Access your API key as a Build Configuration variable (see "Set up your API key" above)
                 /* apiKey */ "AIzaSyBx6F6-qxtaTgFJ5g_uE-UzocLo3KIgpjI");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
