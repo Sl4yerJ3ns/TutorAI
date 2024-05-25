@@ -1,8 +1,10 @@
 package com.example.tutorai;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,6 +19,9 @@ import com.google.ai.client.generativeai.type.GenerateContentResponse;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import android.widget.Toast;
+import android.graphics.BitmapFactory;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,13 +47,16 @@ public class MainActivity extends AppCompatActivity {
         EditText Result = (EditText) findViewById(R.id.Result);
         String editTextValue = Result.getText().toString();
         // For text-only input, use the gemini-pro model
-        GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-pro",
+        GenerativeModel gm = new GenerativeModel(/* modelName */ "gemini-pro-vision",
                 // Access your API key as a Build Configuration variable (see "Set up your API key" above)
                 /* apiKey */ "AIzaSyBx6F6-qxtaTgFJ5g_uE-UzocLo3KIgpjI");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pixel);
+
         Content content = new Content.Builder()
                 .addText(editTextValue)
+                .addImage(bitmap)
                 .build();
 
         ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
