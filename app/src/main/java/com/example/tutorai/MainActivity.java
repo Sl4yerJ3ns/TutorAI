@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
                 /* apiKey */ "AIzaSyBx6F6-qxtaTgFJ5g_uE-UzocLo3KIgpjI");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
+        if (selectedImageBitmap == null){
+            selectedImageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pixel);
+        }
+
         Content content = new Content.Builder()
                 .addText(editTextValue)
                 .addImage(selectedImageBitmap)
