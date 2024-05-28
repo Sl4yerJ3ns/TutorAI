@@ -2,6 +2,7 @@ package com.example.tutorai;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -21,33 +22,44 @@ import com.google.ai.client.generativeai.type.GenerateContentResponse;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import android.widget.Toast;
+
 import android.graphics.BitmapFactory;
-import java.util.List;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.content.Intent;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCaller;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.FileNotFoundException;
+import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
+    private Bitmap selectedImageBitmap;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    try {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Uri uri = result.getData().getData();
+                            if (uri != null) {
+                                selectedImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                            }
+                        }
+                    }
+                    catch (FileNotFoundException e){
+                        Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -79,11 +91,9 @@ public class MainActivity extends AppCompatActivity {
                 /* apiKey */ "AIzaSyBx6F6-qxtaTgFJ5g_uE-UzocLo3KIgpjI");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pixel);
-
         Content content = new Content.Builder()
                 .addText(editTextValue)
-                .addImage(bitmap)
+                .addImage(selectedImageBitmap)
                 .build();
 
         ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
